@@ -1,0 +1,7 @@
+package strategy.client;
+
+import templateMethod.framework.dao.AbstractMemberDao;
+
+public class MemberDao extends AbstractMemberDao{
+
+}
