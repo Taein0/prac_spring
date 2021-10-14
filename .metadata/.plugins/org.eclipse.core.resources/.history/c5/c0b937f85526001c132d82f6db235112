@@ -1,5 +1,0 @@
-package templateMethod.framework.dao;
-
-public class MemberDao {
-
-}

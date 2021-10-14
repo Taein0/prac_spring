@@ -1,7 +1,0 @@
-package strategy.client;
-
-import templateMethod.framework.dao.AbstractMemberDao;
-
-public class ConnectionFactory extends AbstractMemberDao{
-	
-}

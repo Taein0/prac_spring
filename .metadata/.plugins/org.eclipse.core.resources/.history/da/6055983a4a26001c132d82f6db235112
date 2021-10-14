@@ -1,5 +1,0 @@
-package factory.framework;
-
-public abstract class SMTPConnector {
-
-}

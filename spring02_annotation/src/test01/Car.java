@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Car {
 	
+	//@Autowired : 타입을 기준으로 빈을 찾아서 의존성 주입
+	//			  해당 타입의 빈이 2개 이상일 경우 빈의 id와 변수명을 기준으로 의존성 주입
 	@Autowired
 	@Qualifier(value = "wheelBean")
 	private Wheel wheel;
@@ -14,7 +16,8 @@ public class Car {
 	public Car() {
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	
 	public Car(Wheel wheel) {
 		super();
 		this.wheel = wheel;

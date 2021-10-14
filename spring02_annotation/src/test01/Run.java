@@ -9,7 +9,7 @@ public class Run {
 		ApplicationContext context =
 				new ClassPathXmlApplicationContext("test01/applicationContext.xml");
 		
-		System.out.println(context.getBean("wheelBean"));
+		System.out.println(context.getBean("car"));
 
 	}
 
