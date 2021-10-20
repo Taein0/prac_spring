@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.spring.member.model.dto.Member;
 import com.kh.spring.member.model.repository.MemberRepository;
+import com.kh.spring.member.validator.JoinForm;
 
 @Service
 public class MemberService {
@@ -14,9 +15,23 @@ public class MemberService {
 	
 	
 
-	public void insertMember(Member member) {
+	public void insertMember(JoinForm form) {
 
-		memberRepository.insertMebmer(member);
+		memberRepository.insertMebmer(form);
 		
+	}
+
+
+
+	public Member authenicateUser(Member member) {
+		
+		return memberRepository.authenicateUser(member);
+	}
+
+
+
+	public Member selectMemberByUserId(String userId) {
+		
+		return memberRepository.selectMemberByUserId(userId);
 	}
 }
