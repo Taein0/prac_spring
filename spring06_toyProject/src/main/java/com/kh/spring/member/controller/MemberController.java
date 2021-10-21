@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -20,8 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.CookieGenerator;
 
+import com.kh.spring.code.ErrorCode;
+import com.kh.spring.common.exception.HandlableException;
+import com.kh.spring.common.mybatis.validator.ValidateResult;
 import com.kh.spring.member.model.dto.Member;
 import com.kh.spring.member.model.service.MemberService;
 import com.kh.spring.member.validator.JoinForm;
@@ -44,21 +50,38 @@ public class MemberController {
 		this.joinFormValidator = joinFormValidator;
 	}
 	
-	@InitBinder(value ="joinForm")
+	/* 모델 명명 규칙
+	 * com.myapp.Product becomes "product" 
+	 * com.myapp.MyProduct becomes "myProduct"
+	 * com.myapp.UKProduct becomes "UKProduct"
+	 */
+
+	
+	
+	@InitBinder(value ="joinForm") //value = 모델 속성명 또는 파라미터명
+									//model의 속성 중 속성명이 joinForm인 속성이 있는 경우 initBinder메서드 실행
 	public void initBinder(WebDataBinder webDataBinder) {
 		webDataBinder.addValidators(joinFormValidator);
 	}
 	
-	@GetMapping("join-form")
-	public void joinfrom() {}
+	@GetMapping("join")
+	public void joinfrom(Model model) {
+		model.addAttribute(new JoinForm()).addAttribute("error",new ValidateResult().getError());
+		
+	}
 	
 	@PostMapping("join") //@RequestParam 폼타입으로 날라오고 파라미터 이름과 네임이 일치하면 생략가능 
 	public String join(@Validated JoinForm form
 			,Errors errors //반드시 검증될 객체 바로 뒤에 작성
+			,Model model
 			) {
 		
+		ValidateResult vr = new ValidateResult();
+		model.addAttribute("error",vr.getError());
 		if(errors.hasErrors()) {
-			return "member/join-form";
+			vr.addError(errors);			
+						
+			return "member/join";
 		}
 		
 		memberService.insertMember(form);
@@ -81,9 +104,16 @@ public class MemberController {
 	//메서드명 : loginlmpl
 	//재지정할 jsp : mypage
 	@PostMapping("login")
-	public String loginlmpl( Member member, HttpSession session){
+	public String loginlmpl( Member member, HttpSession session, RedirectAttributes redirctAttr){
 
 		Member certifiedUser = memberService.authenicateUser(member);
+		
+		if(certifiedUser == null) {
+			redirctAttr.addFlashAttribute("message","아이디나 비밀번호가 정확하지 않습니다.");
+			return "redirect:/member/login";
+		}
+		
+		
 		session.setAttribute("authentication", certifiedUser); //세션에 올려주기
 		logger.debug(certifiedUser.toString());
 		return "redirect:/member/mypage";
