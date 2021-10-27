@@ -36,22 +36,19 @@ import com.kh.spring.member.model.service.MemberService;
 import com.kh.spring.member.validator.JoinForm;
 import com.kh.spring.member.validator.JoinFormValidator;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("member")
 public class MemberController {
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	
-	private MemberService memberService;
+	private final MemberService memberService;
 	private JoinFormValidator joinFormValidator;
-	
-	
-	public MemberController(MemberService memberService, JoinFormValidator joinFormValidator) {
-		super();
-		this.memberService = memberService;
-		this.joinFormValidator = joinFormValidator;
-	}
+		
 	
 	/* 모델 명명 규칙
 	 * com.myapp.Product becomes "product" 
